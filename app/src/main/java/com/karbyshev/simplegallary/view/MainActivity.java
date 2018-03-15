@@ -1,5 +1,6 @@
 package com.karbyshev.simplegallary.view;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     private MyAdapter myAdapter;
     private ArrayList<MyItem> mItemArrayList;
     private IPresenter iPresenter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,13 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         mGridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mItemArrayList = new ArrayList<>();
+        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.my_swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
 
         iPresenter = new MyParser(MainActivity.this);
         iPresenter.parseJason(MainActivity.this, mItemArrayList);
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
         myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
         mRecyclerView.setAdapter(myAdapter);
+
         myAdapter.setOnItemClickListener(MainActivity.this);
     }
 
@@ -69,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     @Override
     public void isOk() {
+        mEditText.setText("");
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
