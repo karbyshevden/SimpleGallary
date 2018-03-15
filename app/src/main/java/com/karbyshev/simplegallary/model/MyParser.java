@@ -22,8 +22,7 @@ import java.util.ArrayList;
 public class MyParser implements IPresenter {
 
     private int mPage = 2;
-    private String mSearch = "cat";
-    private String FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + mSearch + "&image_type=photo&page=" + mPage + "&per_page=51&pretty=true";
+    private String FEED_URL;
 
 
     private RequestQueue mRequestQueue;
@@ -34,7 +33,8 @@ public class MyParser implements IPresenter {
     }
 
     @Override
-    public void parseJason(Context context, final ArrayList<MyItem> myItemArrayList) {
+    public void parseJason(Context context, final ArrayList<MyItem> myItemArrayList, String search) {
+        FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + search + "&image_type=photo&page=" + mPage + "&per_page=51&pretty=true";
         mRequestQueue = Volley.newRequestQueue(context);
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, FEED_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -71,13 +71,7 @@ public class MyParser implements IPresenter {
         if (TextUtils.isEmpty(newSearch)){
             mainView.editTextIsEmpty();
         } else {
-            mSearch = newSearch;
-            System.out.println(mSearch);
             mainView.isOk();
         }
-    }
-
-    public void setmPage(int mPage) {
-        this.mPage = mPage;
     }
 }

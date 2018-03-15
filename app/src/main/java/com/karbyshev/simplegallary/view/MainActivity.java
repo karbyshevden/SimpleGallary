@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     private IPresenter iPresenter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private String newSearch = "all";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String newSearch = mEditText.getText().toString();
+                newSearch = mEditText.getText().toString();
                 iPresenter.perfomText(newSearch);
             }
         });
@@ -56,13 +58,11 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         });
 
         initViews();
-
-        myAdapter.setOnItemClickListener(MainActivity.this);
     }
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(MainActivity.this, "Was Clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -95,10 +95,11 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         mItemArrayList = new ArrayList<>();
 
         iPresenter = new MyParser(MainActivity.this);
-        iPresenter.parseJason(MainActivity.this, mItemArrayList);
+        iPresenter.parseJason(MainActivity.this, mItemArrayList, newSearch);
 
         myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
         mRecyclerView.setAdapter(myAdapter);
+        myAdapter.setOnItemClickListener(MainActivity.this);
         myAdapter.notifyDataSetChanged();
     }
 }
