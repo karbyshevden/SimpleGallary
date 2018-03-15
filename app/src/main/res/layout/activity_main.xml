@@ -34,7 +34,8 @@
             android:layout_weight="1"
             android:background="@drawable/background_black_stroke"
             android:hint="@string/search"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="#fff" />
 
         <Button
             android:id="@+id/my_button"
@@ -43,7 +44,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:background="@drawable/background_black_stroke"
-            android:text="@string/search" />
+            android:text="@string/search"
+            android:textColor="#fff" />
 
     </LinearLayout>
 

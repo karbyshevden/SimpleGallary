@@ -43,12 +43,6 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mItemArrayList = new ArrayList<>();
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.my_swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-            }
-        });
 
         iPresenter = new MyParser(MainActivity.this);
         iPresenter.parseJason(MainActivity.this, mItemArrayList);
@@ -63,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
         myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
         mRecyclerView.setAdapter(myAdapter);
+
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mRecyclerView.setAdapter(myAdapter);
+                mRecyclerView.invalidate();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         myAdapter.setOnItemClickListener(MainActivity.this);
     }
