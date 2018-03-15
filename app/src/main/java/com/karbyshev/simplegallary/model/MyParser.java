@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 public class MyParser implements IPresenter {
 
-    private int mPage = 1;
+    private int mPage = 2;
     private String mSearch = "cat";
-    private String FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + mSearch + "&image_type=photo&per_page=50&pretty=true";
+    private String FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + mSearch + "&image_type=photo&page=" + mPage + "&per_page=51&pretty=true";
 
 
     private RequestQueue mRequestQueue;
@@ -72,7 +72,12 @@ public class MyParser implements IPresenter {
             mainView.editTextIsEmpty();
         } else {
             mSearch = newSearch;
+            System.out.println(mSearch);
             mainView.isOk();
         }
+    }
+
+    public void setmPage(int mPage) {
+        this.mPage = mPage;
     }
 }
