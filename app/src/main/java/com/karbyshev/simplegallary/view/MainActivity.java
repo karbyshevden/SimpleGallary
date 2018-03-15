@@ -37,16 +37,6 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
         mEditText = (EditText)findViewById(R.id.my_editText);
         mButton = (Button)findViewById(R.id.my_button);
-        mRecyclerView = (RecyclerView)findViewById(R.id.my_recyclerview);
-        mRecyclerView.setHasFixedSize(true);
-        mGridLayoutManager = new GridLayoutManager(this, 3);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mItemArrayList = new ArrayList<>();
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.my_swipeRefreshLayout);
-
-        iPresenter = new MyParser(MainActivity.this);
-        iPresenter.parseJason(MainActivity.this, mItemArrayList);
-
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,10 +45,7 @@ public class MainActivity extends AppCompatActivity implements IMainView{
             }
         });
 
-        myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
-        mRecyclerView.setAdapter(myAdapter);
-
-
+        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.my_swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -67,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements IMainView{
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        initViews();
 
         myAdapter.setOnItemClickListener(MainActivity.this);
     }
@@ -83,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     @Override
     public void isOk() {
+        //Здесь должна произойти магия, и обновить активити
+        initViews();
         mEditText.setText("");
     }
 
@@ -94,5 +85,20 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private void initViews(){
+        mRecyclerView = (RecyclerView)findViewById(R.id.my_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+        mGridLayoutManager = new GridLayoutManager(this, 3);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mItemArrayList = new ArrayList<>();
+
+        iPresenter = new MyParser(MainActivity.this);
+        iPresenter.parseJason(MainActivity.this, mItemArrayList);
+
+        myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
+        mRecyclerView.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
     }
 }
