@@ -14,10 +14,11 @@ import com.karbyshev.simplegallary.view.IMainView;
 import com.karbyshev.simplegallary.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private Context context;
-    private ArrayList<MyItem> myItemArrayList;
+    private ArrayList<MyItem> myItemArrayList = new ArrayList<>();
     private IMainView mListener;
 
 
@@ -25,9 +26,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.mListener = mListener;
     }
 
-    public MyAdapter(Context context, ArrayList<MyItem> myItemArrayList) {
+    public MyAdapter(Context context) {
         this.context = context;
-        this.myItemArrayList = myItemArrayList;
     }
 
     @NonNull
@@ -75,7 +75,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         }
     }
 
-    public void setNewData(ArrayList<MyItem> newData){
+    public void setData(List<MyItem> newData){
         myItemArrayList.clear();
         myItemArrayList.addAll(newData);
         notifyDataSetChanged();

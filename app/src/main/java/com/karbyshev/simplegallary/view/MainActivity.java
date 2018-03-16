@@ -1,11 +1,13 @@
 package com.karbyshev.simplegallary.view;
 
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +18,7 @@ import com.karbyshev.simplegallary.adapter.MyItem;
 import com.karbyshev.simplegallary.model.MyParser;
 import com.karbyshev.simplegallary.presenter.IPresenter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IMainView, SwipeRefreshLayout.OnRefreshListener {
     private EditText mEditText;
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
     private RecyclerView mRecyclerView;
     private GridLayoutManager mGridLayoutManager;
     private MyAdapter myAdapter;
-    private ArrayList<MyItem> mItemArrayList;
     private IPresenter iPresenter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
             public void onClick(View view) {
                 newSearch = mEditText.getText().toString();
                 iPresenter.perfomText(newSearch);
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
             }
         });
 
@@ -53,9 +56,13 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
         mRecyclerView.setHasFixedSize(true);
         mGridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mItemArrayList = new ArrayList<>();
 
-        initViews();
+        iPresenter = new MyParser(MainActivity.this);
+        iPresenter.parseJson(newSearch);
+
+        myAdapter = new MyAdapter(MainActivity.this);
+        myAdapter.setOnItemClickListener(MainActivity.this);
+        mRecyclerView.setAdapter(myAdapter);
     }
 
     @Override
@@ -69,9 +76,8 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
     }
 
     @Override
-    public void isOk() {
-        initViews();
-        mEditText.setText("");
+    public void showData(List<MyItem> list) {
+        myAdapter.setData(list);
     }
 
     @Override
@@ -84,22 +90,8 @@ public class MainActivity extends AppCompatActivity implements IMainView, SwipeR
         super.onResume();
     }
 
-    private void initViews(){
-        iPresenter = new MyParser(MainActivity.this);
-        iPresenter.parseJason(MainActivity.this, mItemArrayList, newSearch);
-
-        myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
-        myAdapter.setNewData(mItemArrayList);
-        mRecyclerView.setAdapter(myAdapter);
-        mRecyclerView.invalidate();
-        mSwipeRefreshLayout.setRefreshing(false);
-        myAdapter.setOnItemClickListener(MainActivity.this);
-    }
-
     @Override
     public void onRefresh() {
-        mRecyclerView.setAdapter(myAdapter);
-        mRecyclerView.invalidate();
-        mSwipeRefreshLayout.setRefreshing(false);
+
     }
 }
