@@ -11,6 +11,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.karbyshev.simplegallary.adapter.MyItem;
 import com.karbyshev.simplegallary.presenter.IPresenter;
+import com.karbyshev.simplegallary.utils.AppController;
 import com.karbyshev.simplegallary.view.IMainView;
 
 import org.json.JSONArray;
@@ -23,9 +24,10 @@ public class MyParser implements IPresenter {
 
     private int mPage = 2;
     private String FEED_URL;
+    private String creatorName;
+    private String imageUrl;
 
 
-    private RequestQueue mRequestQueue;
     private IMainView mainView;
 
     public MyParser(IMainView mainView) {
@@ -35,26 +37,12 @@ public class MyParser implements IPresenter {
     @Override
     public void parseJason(Context context, final ArrayList<MyItem> myItemArrayList, String search) {
         FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + search + "&image_type=photo&page=" + mPage + "&per_page=51&pretty=true";
-        mRequestQueue = Volley.newRequestQueue(context);
+
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, FEED_URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("hits");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject object = jsonArray.getJSONObject(i);
-
-                                String creatorName = object.getString("user");
-                                String imageUrl = object.getString("webformatURL");
-
-                                myItemArrayList.add(new MyItem(imageUrl, creatorName));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                        parseMyJSON(response, myItemArrayList);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -63,7 +51,7 @@ public class MyParser implements IPresenter {
             }
         });
 
-        mRequestQueue.add(request);
+        AppController.getInstance().addToRequestQueue(request);
     }
 
     @Override
@@ -72,6 +60,23 @@ public class MyParser implements IPresenter {
             mainView.editTextIsEmpty();
         } else {
             mainView.isOk();
+        }
+    }
+
+    private void parseMyJSON(JSONObject response, ArrayList<MyItem> myItemArrayList){
+        try {
+            JSONArray jsonArray = response.getJSONArray("hits");
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+
+                creatorName = object.getString("user");
+                imageUrl = object.getString("webformatURL");
+
+                myItemArrayList.add(new MyItem(imageUrl, creatorName));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

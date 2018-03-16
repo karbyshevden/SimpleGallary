@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.karbyshev.simplegallary.R;
 import com.karbyshev.simplegallary.adapter.MyAdapter;
 import com.karbyshev.simplegallary.adapter.MyItem;
@@ -20,7 +18,7 @@ import com.karbyshev.simplegallary.presenter.IPresenter;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements IMainView{
+public class MainActivity extends AppCompatActivity implements IMainView, SwipeRefreshLayout.OnRefreshListener {
     private EditText mEditText;
     private Button mButton;
     private RecyclerView mRecyclerView;
@@ -48,14 +46,14 @@ public class MainActivity extends AppCompatActivity implements IMainView{
         });
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.my_swipeRefreshLayout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mRecyclerView.setAdapter(myAdapter);
-                mRecyclerView.invalidate();
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
+
+        mRecyclerView = (RecyclerView)findViewById(R.id.my_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+        mGridLayoutManager = new GridLayoutManager(this, 3);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mItemArrayList = new ArrayList<>();
 
         initViews();
     }
@@ -72,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements IMainView{
 
     @Override
     public void isOk() {
-        //Здесь должна произойти магия, и обновить активити
         initViews();
         mEditText.setText("");
     }
@@ -88,18 +85,21 @@ public class MainActivity extends AppCompatActivity implements IMainView{
     }
 
     private void initViews(){
-        mRecyclerView = (RecyclerView)findViewById(R.id.my_recyclerview);
-        mRecyclerView.setHasFixedSize(true);
-        mGridLayoutManager = new GridLayoutManager(this, 3);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mItemArrayList = new ArrayList<>();
-
         iPresenter = new MyParser(MainActivity.this);
         iPresenter.parseJason(MainActivity.this, mItemArrayList, newSearch);
 
         myAdapter = new MyAdapter(MainActivity.this, mItemArrayList);
+        myAdapter.setNewData(mItemArrayList);
         mRecyclerView.setAdapter(myAdapter);
+        mRecyclerView.invalidate();
+        mSwipeRefreshLayout.setRefreshing(false);
         myAdapter.setOnItemClickListener(MainActivity.this);
-        myAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefresh() {
+        mRecyclerView.setAdapter(myAdapter);
+        mRecyclerView.invalidate();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

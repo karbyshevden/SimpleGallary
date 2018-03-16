@@ -45,6 +45,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
         holder.mTextView.setText(creatorName);
         Glide.with(context).load(imageUrl).into(holder.mImageView);
+
     }
 
     @Override
@@ -72,5 +73,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                 }
             });
         }
+    }
+
+    public void setNewData(ArrayList<MyItem> newData){
+        myItemArrayList.clear();
+        myItemArrayList.addAll(newData);
+        notifyDataSetChanged();
     }
 }
