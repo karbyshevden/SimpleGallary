@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IMainView {
 
-    void onItemClick(int position);
+    void onItemClick(int position, ArrayList<MyItem> list);
 
     void editTextIsEmpty();
 

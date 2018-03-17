@@ -53,29 +53,29 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return myItemArrayList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView mTextView;
         private ImageView mImageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView)itemView.findViewById(R.id.my_item_textView);
-            mImageView = (ImageView)itemView.findViewById(R.id.my_item_imageView);
+            mTextView = (TextView) itemView.findViewById(R.id.my_item_textView);
+            mImageView = (ImageView) itemView.findViewById(R.id.my_item_imageView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (mListener != null){
+                    if (mListener != null) {
                         int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION);
-                        mListener.onItemClick(position);
+                        if (position != RecyclerView.NO_POSITION) ;
+                        mListener.onItemClick(position, myItemArrayList);
                     }
                 }
             });
         }
     }
 
-    public void setNewData(List<MyItem> newData){
+    public void setNewData(List<MyItem> newData) {
         myItemArrayList.clear();
         myItemArrayList.addAll(newData);
         notifyDataSetChanged();

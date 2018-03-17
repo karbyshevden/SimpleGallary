@@ -1,14 +1,11 @@
 package com.karbyshev.simplegallary.model;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.karbyshev.simplegallary.adapter.MyItem;
 import com.karbyshev.simplegallary.presenter.IPresenter;
 import com.karbyshev.simplegallary.utils.AppController;
@@ -56,18 +53,18 @@ public class MyParser implements IPresenter {
 
     @Override
     public void perfomText(String newSearch) {
-        if (TextUtils.isEmpty(newSearch)){
+        if (TextUtils.isEmpty(newSearch)) {
             mainView.editTextIsEmpty();
         } else {
             parseJason(newSearch);
         }
     }
 
-    private void parseMyJSON(JSONObject response){
+    private void parseMyJSON(JSONObject response) {
         try {
             JSONArray jsonArray = response.getJSONArray("hits");
 
-            ArrayList<MyItem>items = new ArrayList<>();
+            ArrayList<MyItem> items = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.getJSONObject(i);
