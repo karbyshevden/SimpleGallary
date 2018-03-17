@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class MyParser implements IPresenter {
 
-    private int mPage = 2;
+    private int mPage = 1;
     private String FEED_URL;
     private String creatorName;
     private String imageUrl;
@@ -35,14 +35,14 @@ public class MyParser implements IPresenter {
     }
 
     @Override
-    public void parseJason(Context context, final ArrayList<MyItem> myItemArrayList, String search) {
+    public void parseJason(String search) {
         FEED_URL = "https://pixabay.com/api/?key=8334968-4779a336d920b0785293ef347&q=" + search + "&image_type=photo&page=" + mPage + "&per_page=51&pretty=true";
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, FEED_URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        parseMyJSON(response, myItemArrayList);
+                        parseMyJSON(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -59,13 +59,15 @@ public class MyParser implements IPresenter {
         if (TextUtils.isEmpty(newSearch)){
             mainView.editTextIsEmpty();
         } else {
-            mainView.isOk();
+            parseJason(newSearch);
         }
     }
 
-    private void parseMyJSON(JSONObject response, ArrayList<MyItem> myItemArrayList){
+    private void parseMyJSON(JSONObject response){
         try {
             JSONArray jsonArray = response.getJSONArray("hits");
+
+            ArrayList<MyItem>items = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.getJSONObject(i);
@@ -73,7 +75,8 @@ public class MyParser implements IPresenter {
                 creatorName = object.getString("user");
                 imageUrl = object.getString("webformatURL");
 
-                myItemArrayList.add(new MyItem(imageUrl, creatorName));
+                items.add(new MyItem(imageUrl, creatorName));
+                mainView.showData(items);
             }
         } catch (JSONException e) {
             e.printStackTrace();
